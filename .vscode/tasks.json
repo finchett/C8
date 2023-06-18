@@ -7,7 +7,7 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "${workspaceFolder}/*.c", 
                 "`pkg-config --libs --cflags gtk4`",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
