@@ -8,7 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${workspaceFolder}/*.c", 
-                "`pkg-config --libs --cflags gtk4 gl`",
+                "`pkg-config --libs --cflags gtk4 glew`",
                 "-o",
                 "${fileDirname}/main",
             ],
