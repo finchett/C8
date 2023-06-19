@@ -10,7 +10,7 @@
                 "${workspaceFolder}/*.c", 
                 "`pkg-config --libs --cflags gtk4`",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}",
+                "${fileDirname}/main",
             ],
             "options": {
                 "cwd": "${fileDirname}"

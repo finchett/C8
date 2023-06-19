@@ -7,9 +7,9 @@ int main (int argc, char *argv[])
     Chip8Application *chip8;
     chip8 = chip8_application_new();
 
+    g_application_run(G_APPLICATION (chip8), argc, argv);
 
-
-    g_object_unref (chip8);
+    g_object_unref(chip8);
 
     return 0;
 }
