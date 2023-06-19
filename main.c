@@ -15,15 +15,6 @@ render (GtkGLArea *area, GdkGLContext *context)
   glClearColor (0, 0, 0, 0);
   glClear (GL_COLOR_BUFFER_BIT);
 
-   // Draw a Red 1x1 Square centered at origin
-   glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
-      glColor3f(1.0f, 0.0f, 0.0f); // Red
-      glVertex2f(-0.5f, -0.5f);    // x, y
-      glVertex2f( 0.5f, -0.5f);
-      glVertex2f( 0.5f,  0.5f);
-      glVertex2f(-0.5f,  0.5f);
-   glEnd();
-
 
   // we completed our drawing; the draw commands will be
   // flushed at the end of the signal emission chain, and
