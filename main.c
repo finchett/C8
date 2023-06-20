@@ -4,33 +4,11 @@
 #include <stdio.h>
 #include <epoxy/gl.h>
 
-// TODO: see https://www.bassi.io/articles/2015/02/17/using-opengl-with-gtk/ for program structure.
-
-
-// static bool
-// render (GtkGLArea *area, GdkGLContext *context)
-// {
-//   return False;
-// }
-
-// static void init_buffer_objects()
-// {
-// };
-
-// static void realize (GtkGLArea *area, GdkGLContext *context)
-// {
-//   gtk_gl_area_make_current(area);
-//   init_buffer_objects ();
-// };
-
-// // Managing window may not belong here.
 static void activate (Chip8Application *app)
 {
   Chip8Window *window;
   window = chip8_window_new(app);
 };
-
-
 
 int main (int argc, char *argv[])
 {
