@@ -18,10 +18,8 @@ GLuint shader_programme;
 
 G_DEFINE_TYPE(Chip8Window, chip8_window, GTK_TYPE_APPLICATION_WINDOW)
 
-static void init_buffer_objects(){};
-
 static bool on_render(GtkGLArea *area, GdkGLContext *context) {
-  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+  glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
   glUseProgram(shader_programme);
@@ -63,7 +61,7 @@ const char* fragment_shader =
 "#version 400\n"
 "out vec4 frag_colour;"
 "void main() {"
-"  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
+"  frag_colour = vec4(0.6, 0.2, 0.2, 1.0);"
 "}";
 
 // compile shaders
@@ -81,7 +79,6 @@ glAttachShader(shader_programme, fs);
 glAttachShader(shader_programme, vs);
 glLinkProgram(shader_programme);
 
-  init_buffer_objects();
 };
 
 static void chip8_window_class_init() { return; };
