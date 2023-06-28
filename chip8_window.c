@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include "chip8_window.h"
 #include "chip8_application.h"
+#include "chip8_input.h"
 #include <stdio.h>
 #include "debug.h"
 
@@ -100,6 +101,9 @@ static void chip8_window_init(Chip8Window *self) {
   gtk_window_set_default_size(cast_window_self, 400, 300);
 
   gtk_window_present(cast_window_self);
+
+  //input
+  chip8_add_keyboard_input(cast_window_self);
 
   return;
 };
