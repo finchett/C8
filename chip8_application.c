@@ -2,6 +2,10 @@
 #include "chip8_window.h"
 #include "chip8_display.h"
 
+/*
+  TODO: make child of GtkWidget https://docs.gtk.org/gtk4/class.Widget.html
+*/ 
+
 struct _Chip8Application {
   GObject parent;
   GtkWindow window;
