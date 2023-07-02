@@ -1,6 +1,8 @@
 #include "chip8_application.h"
 #include "chip8_window.h"
 #include "chip8_display.h"
+#include "chip8_timer.h"
+#include "debug.h"
 
 /*
   TODO: make child of GtkWidget https://docs.gtk.org/gtk4/class.Widget.html
@@ -10,6 +12,7 @@ struct _Chip8Application {
   GObject parent;
   GtkWindow window;
   GtkWidget *gl_area;
+  Chip8Timer *timer;
 };
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
@@ -22,11 +25,22 @@ static void chip8_application_init(Chip8Application *instance) {
   return;
 };
 
+static void on_tick(Chip8Timer *timer) {
+  printf("tick is: %d\n", timer->tick);
+}
+
 Chip8Application *chip8_application_new(GtkWindow *window) {
-  Chip8Application *instance;
+  Chip8Application *self = g_object_new(CHIP8_TYPE_APPLICATION, NULL);
 
-  instance = g_object_new(CHIP8_TYPE_APPLICATION, NULL);
-  instance->gl_area = (chip8_add_display(window));
+  //timer
+  self->timer = chip8_timer_new();
+  g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, NULL);
 
-  return instance;
+
+  // display
+  //self->gl_area = (chip8_add_display(window));
+
+
+
+  return self;
 };

@@ -9,12 +9,6 @@ const int rate = 17;
         setter will call g_timeout remove and g_timeout_add.
 */ 
 
-struct _Chip8Timer {
-    GObject parent;
-    u_int8_t tick;
-    guint on_tick_signal_id;
-};
-
 G_DEFINE_TYPE(Chip8Timer, chip8_timer, G_TYPE_OBJECT)
 
 static void chip8_decrement_timer(gpointer data) {
