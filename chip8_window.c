@@ -3,6 +3,7 @@
 #include "chip8_window.h"
 #include "chip8_application.h"
 #include "chip8_input.h"
+#include "chip8_memory.h"
 #include <stdio.h>
 #include "debug.h"
 

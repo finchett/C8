@@ -1,6 +1,8 @@
 #include <stdint.h>
-#include "memory.h"
+#include "chip8_memory.h"
 
+int16_t pc = 0;
+int16_t ir = 0;
 int16_t memory[4096];
 int16_t stack[32];
 

@@ -1,6 +1,7 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "chip8_application.h": "c"
+        "chip8_application.h": "c",
+        "stdint.h": "c"
     }
 }
