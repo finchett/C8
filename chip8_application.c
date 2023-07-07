@@ -2,7 +2,9 @@
 #include "chip8_window.h"
 #include "chip8_display.h"
 #include "chip8_timer.h"
+#include "chip8_memory.h"
 #include "chip8_input.h"
+#include "chip8_font.h"
 #include "debug.h"
 
 /*
@@ -15,6 +17,8 @@ struct _Chip8Application {
   GtkWidget *gl_area;
   Chip8Timer *timer;
   int16_t *input;
+  int16_t *memory;
+  int16_t *stack;
 };
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
@@ -44,6 +48,10 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
 
   // input
   self->input = chip8_add_keyboard_input(window);
+
+  //memory
+  self->memory = memory;
+  self->stack = stack;
 
 
 
