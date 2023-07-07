@@ -43,6 +43,8 @@ static void execute();
 
 static void on_tick(Chip8Timer *timer) {
 
+  // todo: multithread rather than using gtk timeouts which are not precise enough.
+
   fetch();
   decode();
   execute();
