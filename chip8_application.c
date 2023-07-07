@@ -15,12 +15,16 @@ struct _Chip8Application {
   GObject parent;
   GtkWindow window;
   GtkWidget *gl_area;
+
   Chip8Timer *timer;
+
   int16_t *input;
-  int16_t *memory;
-  int16_t *stack;
-  int16_t *pc;
-  int16)t *ir;
+
+  uint8_t *memory;
+  uint8_t *stack;
+
+  uint16_t *pc;
+  uint16_t *ir;
 };
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
@@ -71,8 +75,11 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
 };
 
 
-static void fetch() {
+static uint16_t fetch() {
+  char byte1;
+  char byte2;
 
+  pc += 2;
 };
 
 static void decode() {

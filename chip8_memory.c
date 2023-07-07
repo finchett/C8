@@ -1,10 +1,10 @@
 #include <stdint.h>
 #include "chip8_memory.h"
 
-int16_t pc = 0;
-int16_t ir = 0;
-int16_t memory[4096];
-int16_t stack[32];
+uint16_t pc = 0;
+uint16_t ir = 0;
+uint8_t memory[4096];
+uint8_t stack[32];
 
 static int stack_index = 0;
 
