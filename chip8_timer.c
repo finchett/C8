@@ -113,7 +113,7 @@ static void chip8_timer_init(Chip8Timer *instance)
     return;
 }
 
-Chip8Timer *chip8_timer_new()
+Chip8Timer *chip8_timer_new(uint8_t tick, int rate)
 {
-    return g_object_new(CHIP8_TYPE_TIMER, "tick", 255, "rate", 17, NULL);
+    return g_object_new(CHIP8_TYPE_TIMER, "tick", tick, "rate", rate, NULL);
 }

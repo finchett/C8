@@ -12,4 +12,4 @@ struct _Chip8Timer {
     guint on_tick_signal_id;
 };
 
-Chip8Timer *chip8_timer_new();
+Chip8Timer *chip8_timer_new(uint8_t tick, int rate);
