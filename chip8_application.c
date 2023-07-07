@@ -19,6 +19,8 @@ struct _Chip8Application {
   int16_t *input;
   int16_t *memory;
   int16_t *stack;
+  int16_t *pc;
+  int16)t *ir;
 };
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
@@ -31,8 +33,16 @@ static void chip8_application_init(Chip8Application *instance) {
   return;
 };
 
+static void fetch();
+static void decode();
+static void execute();
+
 static void on_tick(Chip8Timer *timer) {
-  // printf("tick is: %d\n", timer->tick);
+
+  fetch();
+  decode();
+  execute();
+
 }
 
 Chip8Application *chip8_application_new(GtkWindow *window) {
@@ -52,8 +62,23 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
   //memory
   self->memory = memory;
   self->stack = stack;
+  self->pc = &pc;
+  self->ir = &ir;
 
 
 
   return self;
+};
+
+
+static void fetch() {
+
+};
+
+static void decode() {
+
+};
+
+static void execute() {
+
 };
