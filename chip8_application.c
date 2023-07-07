@@ -55,7 +55,7 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
   Chip8Application *self = g_object_new(CHIP8_TYPE_APPLICATION, NULL);
 
   //timer
-  self->timer = chip8_timer_new(255, 17);
+  self->timer = chip8_timer_new(255, 1);
   g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, NULL);
 
 
