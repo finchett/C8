@@ -8,10 +8,10 @@ uint8_t stack[32];
 
 static int stack_index = 0;
 
-void push(int16_t n) {
+void push(uint8_t n) {
     stack[stack_index++] = n;
 };
 
-int16_t pop() {
+uint8_t pop() {
     return stack[stack_index--];
 };

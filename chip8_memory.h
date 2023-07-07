@@ -1,10 +1,10 @@
 #pragma once
 #include <stdint.h>
 
-extern int16_t memory[];
-extern int16_t stack[];
-extern int16_t pc;
-extern int16_t ir;
+extern uint8_t memory[];
+extern uint8_t stack[];
+extern uint16_t pc;
+extern uint16_t ir;
 
-void push(int16_t n);
-int16_t pop();
+void push(uint8_t n);
+uint8_t pop();
