@@ -46,7 +46,7 @@ static void key_released (
   chip8_input[chip8_button] = false;
 }
 
-void chip8_add_keyboard_input(GtkWidget *window)
+int16_t *chip8_add_keyboard_input(GtkWidget *window)
 {
     mappings = g_hash_table_new(g_direct_hash, g_direct_equal);
 
@@ -76,4 +76,6 @@ void chip8_add_keyboard_input(GtkWidget *window)
     g_signal_connect(controller, "key-released", key_released, NULL);
 
     gtk_widget_add_controller(window, controller);
+
+    return chip8_input;
 }
