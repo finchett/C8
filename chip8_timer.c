@@ -100,8 +100,7 @@ static void chip8_timer_class_init(Chip8TimerClass *class)
                           17 /* default value */,
                           G_PARAM_READWRITE);                          
 
-    g_object_class_install_property(object_class, PROP_TICK, timer_properties[PROP_TICK]);
-    g_object_class_install_property(object_class, PROP_RATE, timer_properties[PROP_RATE]);
+    g_object_class_install_properties(object_class, N_PROPERTIES, timer_properties);
 };
 
 static void chip8_timer_init(Chip8Timer *instance)
