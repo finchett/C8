@@ -1,13 +1,6 @@
 #include "chip8_timer.h"
 #include "stdio.h"
 
-/* 17ms between ticks ~= 60/s*/
-
-/*
-    todo: move rate into chip8 timer.
-        setter will call g_timeout remove and g_timeout_add.
-*/
-
 typedef enum
 {
     PROP_TICK = 1,

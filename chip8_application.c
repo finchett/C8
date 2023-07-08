@@ -38,7 +38,6 @@ static uint16_t fetch();
 static void decode(uint16_t ins);
 static void execute();
 
-// 1000hz
 static void on_tick(Chip8Timer *timer, gpointer data) {
 
   Chip8Application *self = data;
