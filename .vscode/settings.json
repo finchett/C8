@@ -3,6 +3,14 @@
     "files.associations": {
         "chip8_application.h": "c",
         "stdint.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "cstddef": "c",
+        "array": "c",
+        "hash_map": "c",
+        "string_view": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "span": "c",
+        "valarray": "c"
     }
 }

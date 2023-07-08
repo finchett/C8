@@ -56,7 +56,7 @@ static void on_tick(Chip8Timer *timer, gpointer data) {
 
   //TODO: move out of main thread. 
   // only queue redraw when display is called. Use flag as instructions will be executed off the main thread.
-  gtk_gl_area_queue_render(self->gl_area);
+  //gtk_gl_area_queue_render(self->gl_area);
 
 }
 
@@ -78,6 +78,7 @@ static void read_rom() {
     printf("Read %zu bytes from the file.\n", bytesRead);
 };
 
+
 Chip8Application *chip8_application_new(GtkWindow *window) {
   Chip8Application *self = g_object_new(CHIP8_TYPE_APPLICATION, NULL);
 
@@ -90,7 +91,7 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
 
 
   // //1000 timer
-  self->timer = chip8_timer_new(255, 1);
+  self->timer = chip8_timer_new(255, 17);
   g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
 
   // display
@@ -206,5 +207,11 @@ static void _ANNN(uint16_t nnn) {
 }
 
 static void _DXYN(uint16_t x, uint16_t y, uint16_t n) {
+
+  /* keep 2d array in memory. set values as per instruction. mark redraw needed flag.*/
+
+
+
+
   printf("draw!!!\n");
 }

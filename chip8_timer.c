@@ -83,6 +83,10 @@ static void chip8_timer_class_init(Chip8TimerClass *class)
     object_class->set_property = chip8_timer_set_property;
     object_class->get_property = chip8_timer_get_property;
 
+    signals[ON_TICK] = g_signal_new("on_tick", CHIP8_TYPE_TIMER, G_SIGNAL_RUN_LAST,
+                                0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+
+
     timer_properties[PROP_TICK] =
         g_param_spec_uint("tick",
                           "Tick",
@@ -106,10 +110,6 @@ static void chip8_timer_class_init(Chip8TimerClass *class)
 
 static void chip8_timer_init(Chip8Timer *instance)
 {
-    signals[ON_TICK] = g_signal_new("on_tick", CHIP8_TYPE_TIMER, G_SIGNAL_RUN_LAST,
-                                    0, NULL, NULL, NULL, G_TYPE_NONE, 0);
-
-    return;
 }
 
 Chip8Timer *chip8_timer_new(uint8_t tick, int rate)
