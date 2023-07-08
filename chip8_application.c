@@ -62,7 +62,7 @@ static void read_rom() {
     }
 
     // Read the file into the buffer
-    size_t bytesRead = fread(memory, sizeof(uint8_t), 4096, file);
+    size_t bytesRead = fread(memory + 0x200, sizeof(uint8_t), 4096, file);
 
     // Close the file
     fclose(file);
@@ -75,6 +75,9 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
 
   // load rom
   read_rom();
+
+  // set pc to 0x200
+  pc = 0x200;
 
 
 
@@ -176,18 +179,22 @@ static void _00E0() {
 }
 
 static void _1NNN(uint16_t nnn) {
+  pc = nnn;
   printf("jump!\n");
 }
 
 static void _6XNN(uint16_t vx, uint16_t nn) {
   printf("set register vx = nn!\n");
+  vr[vx] = nn;
 }
 
 static void _7XNN(uint16_t vx, uint16_t nn) {
+  vr[vx] += nn;
   printf("add value nn to register vx!\n");
 }
 
 static void _ANNN(uint16_t nnn) {
+  ir = nnn;
   printf("set index register ir to NNN\n");
 }
 
