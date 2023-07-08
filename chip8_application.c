@@ -48,7 +48,7 @@ static void on_tick(Chip8Timer *timer) {
 
   uint16_t ins = fetch();
   decode(ins);
-  execute();
+  // execute();
 
 }
 
@@ -59,7 +59,6 @@ static void read_rom() {
     file = fopen("ibm.ch8", "rb");
     if (file == NULL) {
         printf("Failed to open the file.\n");
-        return 1;
     }
 
     // Read the file into the buffer
@@ -113,6 +112,19 @@ static uint16_t fetch() {
   return ret;
 };
 
+// todo: move elsewhere
+
+static bool arr_equal(char arr1[], char arr2[], unsigned int size) {
+  return !memcmp(arr1, arr2, size);
+}
+
+static void _00E0();
+static void _1NNN(uint16_t nnn);
+static void _6XNN(uint16_t vx, uint16_t nn);
+static void _7XNN(uint16_t vx, uint16_t nn);
+static void _ANNN(uint16_t nnn);
+static void _DXYN(uint16_t x, uint16_t y, uint16_t n);
+
 static void decode(uint16_t ins) {
   uint16_t nibbles[4] = {0};
 
@@ -124,14 +136,61 @@ static void decode(uint16_t ins) {
   nibbles[1] = (ins >> 8) & mask;
   nibbles[0] = (ins >> 12) & mask;
 
-  
+  switch (nibbles[0]) {
+    case 0x00:
+      char clearscreen[4] = {0x00, 0x00, 0x0e, 0x00};
+      if (arr_equal(nibbles, clearscreen, sizeof(nibbles))) {
+        _00E0();
+      }
+      break;
 
+    case 0x01:
+      _1NNN(ins & 0xFFF);
+      break;
+
+    case 0x06:
+      _6XNN(nibbles[1], ins & 0x0FF);
+      break;
+
+    case 0x07:
+      _7XNN(nibbles[1], ins & 0x0FF);
+      break;
+    
+    case 0x0a:
+      _ANNN(ins & 0xFFF);
+      break;
+
+    case 0x0d:
+      _DXYN(nibbles[1], nibbles[2], nibbles[3]);
+      break;
+  }
 };
 
 static void execute() {
 
-};
+}
 
-static void _0NNN() {
 
+static void _00E0() {
+  printf("clearscreen!\n");
+}
+
+static void _1NNN(uint16_t nnn) {
+  printf("jump!\n");
+}
+
+static void _6XNN(uint16_t vx, uint16_t nn) {
+  printf("set register vx = nn!\n");
+}
+
+static void _7XNN(uint16_t vx, uint16_t nn) {
+  printf("add value nn to register vx!\n");
+}
+
+static void _ANNN(uint16_t nnn) {
+  printf("set index register ir to NNN\n");
+}
+
+static void _DXYN(uint16_t x, uint16_t y, uint16_t n) {
+  printf("draw!!!\n");
 }
