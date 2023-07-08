@@ -39,7 +39,7 @@ static void chip8_application_init(Chip8Application *instance) {
 };
 
 static uint16_t fetch();
-static void decode();
+static void decode(uint16_t ins);
 static void execute();
 
 static void on_tick(Chip8Timer *timer) {
@@ -47,7 +47,7 @@ static void on_tick(Chip8Timer *timer) {
   // todo: multithread rather than using gtk timeouts which are not precise enough.
 
   uint16_t ins = fetch();
-  decode();
+  decode(ins);
   execute();
 
 }
@@ -103,19 +103,35 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
 
 
 static uint16_t fetch() {
-  char byte1 = memory[pc];
-  char byte2 = memory[pc + 1];
-
+  uint16_t byte1 = memory[pc];
+  uint16_t byte2 = memory[pc + 1];
+  uint16_t ret;
   pc += 2;
   
   //returns joined bytes
-  return (uint16_t) ((byte1 << 8) | byte2);
+  ret = (uint16_t) ((byte1 << 8) | byte2);
+  return ret;
 };
 
-static void decode() {
+static void decode(uint16_t ins) {
+  uint16_t nibbles[4] = {0};
+
+  uint16_t mask = 0b0000000000001111;
+
+  // storing nibbles in reverse order 
+  nibbles[3] = ins & mask;
+  nibbles[2] = (ins >> 4) & mask;
+  nibbles[1] = (ins >> 8) & mask;
+  nibbles[0] = (ins >> 12) & mask;
+
+  
 
 };
 
 static void execute() {
 
 };
+
+static void _0NNN() {
+
+}
