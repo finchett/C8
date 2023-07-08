@@ -15,6 +15,7 @@
 struct _Chip8Application {
   GObject parent;
   GtkWindow window;
+  
   GtkWidget *gl_area;
 
   Chip8Timer *timer;
@@ -22,21 +23,16 @@ struct _Chip8Application {
   int16_t *input;
 
   uint8_t *memory;
-  uint8_t *stack;
-
+  uint16_t *stack;
   uint16_t *pc;
   uint16_t *ir;
 };
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
 
-static void chip8_application_class_init(Chip8ApplicationClass *class) {
-  return;
-};
+static void chip8_application_class_init(Chip8ApplicationClass *class) {};
 
-static void chip8_application_init(Chip8Application *instance) {
-  return;
-};
+static void chip8_application_init(Chip8Application *instance) {};
 
 static uint16_t fetch();
 static void decode(uint16_t ins);
@@ -69,8 +65,11 @@ static void read_rom() {
         printf("Failed to open the file.\n");
     }
 
-    // Read the file into the buffer
-    size_t bytesRead = fread(memory + 0x200, sizeof(uint8_t), 4096, file);
+    // Read the file into the buffer (program starts at 0x200)
+    size_t bytesRead = fread(memory + 0x200, sizeof(uint8_t), (4096) - 0x200, file);
+
+    // set pc to 0x200
+    pc = 0x200;
 
     // Close the file
     fclose(file);
@@ -85,12 +84,6 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
   // load rom
   read_rom();
 
-  // set pc to 0x200
-  pc = 0x200;
-
-
-
-  // //1000 timer
   self->timer = chip8_timer_new(255, 17);
   g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
 
