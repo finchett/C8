@@ -36,7 +36,6 @@ static void chip8_decrement_timer(gpointer data)
     g_signal_emit(timer, signals[ON_TICK], 0, NULL);
 
     timer->tick--;
-    return;
 }
 
 static void chip8_timer_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
@@ -50,6 +49,8 @@ static void chip8_timer_set_property(GObject *object, guint property_id, const G
             break;
         case PROP_RATE:
             self->rate = g_value_get_int(value);
+                g_source_remove(self->timer);
+                self->timer = g_timeout_add(self->rate, (GSourceFunc)chip8_decrement_timer, (gpointer)self);
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
@@ -105,14 +106,9 @@ static void chip8_timer_class_init(Chip8TimerClass *class)
 
 static void chip8_timer_init(Chip8Timer *instance)
 {
-
     signals[ON_TICK] = g_signal_new("on_tick", CHIP8_TYPE_TIMER, G_SIGNAL_RUN_LAST,
                                     0, NULL, NULL, NULL, G_TYPE_NONE, 0);
 
-
-    // TODO: time constructor using properties.
-    // test multiple timers can be created.
-    g_timeout_add(17, (GSourceFunc)chip8_decrement_timer, (gpointer)instance);
     return;
 }
 

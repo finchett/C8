@@ -9,6 +9,7 @@ struct _Chip8Timer {
     GObject parent;
     u_int8_t tick;
     gint rate;
+    guint timer;
     guint on_tick_signal_id;
 };
 
