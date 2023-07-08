@@ -42,13 +42,21 @@ static uint16_t fetch();
 static void decode(uint16_t ins);
 static void execute();
 
-static void on_tick(Chip8Timer *timer) {
+// 1000hz
+static void on_tick(Chip8Timer *timer, gpointer data) {
+
+  Chip8Application *self = data;
 
   // todo: multithread rather than using gtk timeouts which are not precise enough.
 
   uint16_t ins = fetch();
   decode(ins);
   // execute();
+
+
+  //TODO: move out of main thread. 
+  // only queue redraw when display is called. Use flag as instructions will be executed off the main thread.
+  gtk_gl_area_queue_render(self->gl_area);
 
 }
 
@@ -81,10 +89,9 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
 
 
 
-  //timer
+  // //1000 timer
   self->timer = chip8_timer_new(255, 1);
-  g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, NULL);
-
+  g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
 
   // display
   self->gl_area = (chip8_add_display(window));

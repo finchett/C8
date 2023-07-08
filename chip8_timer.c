@@ -109,6 +109,9 @@ static void chip8_timer_init(Chip8Timer *instance)
     signals[ON_TICK] = g_signal_new("on_tick", CHIP8_TYPE_TIMER, G_SIGNAL_RUN_LAST,
                                     0, NULL, NULL, NULL, G_TYPE_NONE, 0);
 
+
+    // TODO: time constructor using properties.
+    // test multiple timers can be created.
     g_timeout_add(17, (GSourceFunc)chip8_decrement_timer, (gpointer)instance);
     return;
 }
