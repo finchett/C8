@@ -3,12 +3,6 @@
 #include "debug.h"
 #include "chip8_input.h"
 
-// triangle for testing drawing
-float points[] = {
-   0.0f,  0.5f,  0.0f,
-   0.5f, -0.5f,  0.0f,
-  -0.5f, -0.5f,  0.0f
-};
 
 // Gl context must be available.
 void print_opengl_info() {

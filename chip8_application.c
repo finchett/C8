@@ -83,8 +83,8 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
   // load rom
   read_rom();
 
-  self->timer = chip8_timer_new(255, 17);
-  g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
+  // self->timer = chip8_timer_new(255, 17);
+  // g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
 
   // display
   self->gl_area = (chip8_add_display(window));
