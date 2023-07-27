@@ -5,15 +5,16 @@ GLuint vbo = 0;
 GLuint vao = 0;
 GLuint shader_programme;
 GLuint texture;
+int a;
 
-float texture_data[2048];
+float texture_data[64 * 32 * 3];
 
 // triangle for testing drawing
 float points[] = {
-    -1.0f, -1.0f, 0.0f,
-    -1.0f, 1.0f, 0.0f,
-    1.0f, -1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f};
+    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+    -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
 
 static bool on_render(GtkGLArea *area, GdkGLContext *context)
 {
@@ -28,10 +29,15 @@ static bool on_render(GtkGLArea *area, GdkGLContext *context)
 
   glBindVertexArray(vao);
 
-  for (int i = 0; i<2048; i++) {
-    texture_data[i] += 0.1;
+  // testing.
+  texture_data[a] += 1;
+  texture_data[(64 * 32 * 3) - a] += 1;
+  a += 1;
+  if (a >= 64 * 32 * 2)
+  {
+    a = 0;
   }
-  
+
   // draw points 0-3 from the currently bound VAO with current in-use shader
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glBindVertexArray(0);
@@ -58,16 +64,19 @@ static void on_realize(GtkGLArea *area, GdkGLContext *context)
   glBindVertexArray(vao);
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, NULL);
+  
+  // vertex position attributes
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, NULL);
 
   // define shaders
   const char *vertex_shader =
       "#version 400\n"
-      "in vec3 vp;"
+      "layout (location = 0) in vec3 vp;"
+      "layout (location = 1) in vec2 tex;"
       "out vec2 Texcoord;"
       "void main() {"
       "  gl_Position = vec4(vp, 1.0);"
-      "  Texcoord = vec2(vp.x, vp.y);"
+      "  Texcoord = tex;"
       "}";
 
   const char *fragment_shader =
@@ -80,7 +89,6 @@ static void on_realize(GtkGLArea *area, GdkGLContext *context)
       "}";
 
   // compile shaders
-
 
   GLuint vs = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vs, 1, &vertex_shader, NULL);
@@ -101,10 +109,12 @@ static void on_realize(GtkGLArea *area, GdkGLContext *context)
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 32, 0, GL_RGB, GL_FLOAT, texture_data);
+  // vertex texture coords
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, sizeof(float) * 3);
 };
 
 GtkWidget *chip8_add_display(GtkWindow *window)
