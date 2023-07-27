@@ -51,7 +51,7 @@ static void on_tick(Chip8Timer *timer, gpointer data) {
 
   //TODO: move out of main thread. 
   // only queue redraw when display is called. Use flag as instructions will be executed off the main thread.
-  //gtk_gl_area_queue_render(self->gl_area);
+  gtk_gl_area_queue_render(self->gl_area);
 
 }
 
@@ -83,8 +83,8 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
   // load rom
   read_rom();
 
-  // self->timer = chip8_timer_new(255, 17);
-  // g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
+  self->timer = chip8_timer_new(255, 17);
+  g_signal_connect(self->timer, "on_tick", (GCallback) on_tick, (gpointer) self);
 
   // display
   self->gl_area = (chip8_add_display(window));
@@ -97,9 +97,7 @@ Chip8Application *chip8_application_new(GtkWindow *window) {
   self->stack = stack;
   self->pc = &pc;
   self->ir = &ir;
-
-
-
+  
   return self;
 };
 

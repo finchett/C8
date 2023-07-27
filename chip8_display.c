@@ -9,7 +9,6 @@ int a;
 
 float texture_data[64 * 32 * 3];
 
-// triangle for testing drawing
 float points[] = {
     -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
     -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
@@ -23,13 +22,12 @@ static bool on_render(GtkGLArea *area, GdkGLContext *context)
 
   glUseProgram(shader_programme);
 
-  // update texture
+  /* Texture */
   glBindTexture(GL_TEXTURE_2D, texture);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 32, 0, GL_RGB, GL_FLOAT, texture_data);
 
   glBindVertexArray(vao);
 
-  // testing.
   texture_data[a] += 1;
   texture_data[(64 * 32 * 3) - a] += 1;
   a += 1;
@@ -38,7 +36,6 @@ static bool on_render(GtkGLArea *area, GdkGLContext *context)
     a = 0;
   }
 
-  // draw points 0-3 from the currently bound VAO with current in-use shader
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glBindVertexArray(0);
 
@@ -49,26 +46,20 @@ static bool on_render(GtkGLArea *area, GdkGLContext *context)
 
 static void on_realize(GtkGLArea *area, GdkGLContext *context)
 {
-
-  // write out opengl version info
   print_opengl_info();
-
   gtk_gl_area_make_current(area);
 
-  // buffers
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(points) * sizeof(float), points, GL_STATIC_DRAW);
 
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
-  glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  
-  // vertex position attributes
+
+  glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, NULL);
 
-  // define shaders
   const char *vertex_shader =
       "#version 400\n"
       "layout (location = 0) in vec3 vp;"
@@ -88,8 +79,6 @@ static void on_realize(GtkGLArea *area, GdkGLContext *context)
       "  frag_colour = texture(tex, Texcoord);"
       "}";
 
-  // compile shaders
-
   GLuint vs = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vs, 1, &vertex_shader, NULL);
   glCompileShader(vs);
@@ -97,13 +86,12 @@ static void on_realize(GtkGLArea *area, GdkGLContext *context)
   glShaderSource(fs, 1, &fragment_shader, NULL);
   glCompileShader(fs);
 
-  // attach to program
   shader_programme = glCreateProgram();
+
   glAttachShader(shader_programme, vs);
   glAttachShader(shader_programme, fs);
   glLinkProgram(shader_programme);
 
-  // texture
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -112,7 +100,7 @@ static void on_realize(GtkGLArea *area, GdkGLContext *context)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  // vertex texture coords
+  /* Texture attribute */
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, sizeof(float) * 3);
 };

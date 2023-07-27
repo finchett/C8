@@ -11,7 +11,8 @@
         "format": "c",
         "initializer_list": "c",
         "span": "c",
-        "valarray": "c"
+        "valarray": "c",
+        "gl.h": "c"
     },
 
     "coloredRegions": {
