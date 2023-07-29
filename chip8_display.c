@@ -28,13 +28,17 @@ static bool on_render(GtkGLArea *area, GdkGLContext *context)
 
   glBindVertexArray(vao);
 
-  texture_data[a] += 1;
-  texture_data[(64 * 32 * 3) - a] += 1;
-  a += 1;
-  if (a >= 64 * 32 * 2)
-  {
-    a = 0;
-  }
+  // texture_data[a] += 1;
+  // texture_data[a+1] += 1;
+  // texture_data[a+2] += 1;
+  // texture_data[(64 * 32 * 3) - a-1] += 1;
+  // texture_data[(64 * 32 * 3) - a-2] += 1;
+  // texture_data[(64 * 32 * 3) - a-3] += 1;
+  // a += 3;
+  // if (a >= 64 * 32 * 2)
+  // {
+  //   a = 0;
+  // }
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   glBindVertexArray(0);
