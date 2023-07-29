@@ -1,6 +1,8 @@
 #include <epoxy/gl.h>
 #include "gtk/gtk.h"
-// globals for now...
+
+/* TODO: clean up. */
+
 GLuint vbo = 0;
 GLuint vao = 0;
 GLuint shader_programme;
@@ -10,6 +12,7 @@ int a;
 float texture_data[64 * 32 * 3];
 
 float points[] = {
+  /* TODO: remove z coords, fix in vertex shader. */
     -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
     -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
