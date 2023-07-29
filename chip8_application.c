@@ -196,47 +196,39 @@ static void _ANNN(uint16_t nnn) {
   printf("set index register ir to NNN\n");
 }
 
-// macro?
-static int one_d_index(uint16_t x, uint16_t y) {
-  return (((((32-y) * 64) + x)) * 3);
-}
-
 static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n) {
-
-  /* keep 2d array in memory. 
-    set values as per instruction. mark redraw needed flag.*/
 
   uint16_t x = vr[vx] & 63;
   uint16_t y = vr[vy] & 31;
 
   vr[0xF] = 0;
 
-
   uint8_t sprite_row;
-  uint8_t state;
+  uint8_t sprite_bit;
+  float * pixel;
 
-  // for y height
-  for (uint16_t i = 0; i < n; i++) {
-    /* get byte */
-    sprite_row = memory[ir + i];
+  for (uint16_t row = 0; row < n; row++) {
 
-    // for x row
+    sprite_row = memory[ir + row];
+
     for (uint8_t bit = 0; bit < 8; bit++) {
-      state = (sprite_row >> (7-bit)) & 1;
 
-      if (state == 1 && texture_data[one_d_index(x + bit, y+i)] == 1) {
+      sprite_bit = (sprite_row >> (7-bit)) & 1;
+      pixel = &(texture_data[one_d_index(x + bit, y+row)]);
+
+      if (sprite_bit == 1 && *pixel == 1) {
         vr[0xF] = 1;
-        texture_data[one_d_index(x + bit, y+i)] = 0;
+        *pixel = 0;
       }
 
-      if (state == 1 && texture_data[one_d_index(x + bit, y+i)] == 0) {
-        texture_data[one_d_index(x + bit, y+i)] = 1;
+      if (sprite_bit == 1 && *pixel == 0) {
+        *pixel = 1;
       }
 
-      if (x + bit >= 64) {break;}
-      // break if end of screen row
+      if (x + bit >= 64) {
+        break;
+      }
     }
-
   }
 
   printf("draw!!!\n");

@@ -18,7 +18,7 @@ static void chip8_window_init(Chip8Window *self) {
 
   // window
   gtk_window_set_title(cast_window_self, "Window");
-  gtk_window_set_default_size(cast_window_self, 400, 300);
+  gtk_window_set_default_size(cast_window_self, 1200, 600);
   gtk_window_present(cast_window_self);
 
   // chip8
