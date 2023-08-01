@@ -13,6 +13,7 @@
 */
 
 static uint16_t ARR_00E0[] = {0x00, 0x00, 0x0e, 0x00};
+static uint16_t ARR_00EE[] = {0x00, 0x00, 0x0e, 0x0e};
 
 struct _Chip8Application
 {
@@ -125,7 +126,13 @@ static bool ins_equal(uint16_t arr1[], uint16_t arr2[])
 }
 
 static void _00E0();
+static void _00EE();
 static void _1NNN(uint16_t nnn);
+static void _2NNN(uint16_t nnn);
+static void _3XNN(uint16_t vx, uint16_t nn);
+static void _4XNN(uint16_t vx, uint16_t nn);
+static void _5XY0(uint16_t vx, uint16_t vy);
+static void _9XY0(uint16_t vx, uint16_t vy);
 static void _6XNN(uint16_t vx, uint16_t nn);
 static void _7XNN(uint16_t vx, uint16_t nn);
 static void _ANNN(uint16_t nnn);
@@ -153,13 +160,18 @@ static void decode(uint16_t ins)
   switch (nibbles[0])
   {
   case 0x00:
-
     // TODO: make const
     if (ins_equal(nibbles, ARR_00E0))
     {
       _00E0();
+      break;
     }
-    break;
+
+    if (ins_equal(nibbles, ARR_00EE))
+    {
+      _00EE();
+      break;
+    }
 
   case 0x01:
     _1NNN(nnn);
@@ -196,14 +208,45 @@ static void _00E0()
   memset(texture_data, 0, sizeof(texture_data));
 }
 
+static void _00EE()
+{
+  pc = pop();
+}
+
 static void _1NNN(uint16_t nnn)
 {
   pc = nnn;
 }
 
-static void _2NNN(uint16_t nnn){
-
+static void _2NNN(uint16_t nnn)
+{
+  push(pc);
+  pc = nnn;
 };
+
+static void _3XNN(uint16_t vx, uint16_t nn)
+{
+  if (vr[vx] == nn)
+  {
+    pc += 2;
+  }
+}
+
+static void _4XNN(uint16_t vx, uint16_t nn)
+{
+  if (vr[vx] != nn)
+  {
+    pc += 2;
+  }
+}
+
+static void _5XY0(uint16_t vx, uint16_t vy)
+{
+  if (vr[vx] == vr[vy])
+  {
+    pc += 2;
+  }
+}
 
 static void _6XNN(uint16_t vx, uint16_t nn)
 {
@@ -213,6 +256,14 @@ static void _6XNN(uint16_t vx, uint16_t nn)
 static void _7XNN(uint16_t vx, uint16_t nn)
 {
   vr[vx] += nn;
+}
+
+static void _9XY0(uint16_t vx, uint16_t vy)
+{
+  if (vr[vx] != vr[vy])
+  {
+    pc += 2;
+  }
 }
 
 static void _ANNN(uint16_t nnn)
