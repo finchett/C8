@@ -452,8 +452,8 @@ static void _8XYE(uint16_t vx, uint16_t vy)
   // duplicate of 8xy6
   // ambigous and may need to be configurable.
   vr[vx] = vr[vy];
-  vr[0xF] = vr[vx] & 0x1;
-  vr[vx] = vr[vx] << 1;
+  vr[0xF] = (vr[vx] >> 7) & 0x1;
+  vr[vx] = (uint8_t)(vr[vx] << 1);
 }
 
 static void _9XY0(uint16_t vx, uint16_t vy)
