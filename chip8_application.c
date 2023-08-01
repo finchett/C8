@@ -148,6 +148,17 @@ static void _ANNN(uint16_t nnn);
 static void _BNNN(uint16_t nnn);
 static void _CXNN(uint16_t vx, uint16_t nn);
 static void _DXYN(uint16_t x, uint16_t y, uint16_t n);
+static void _EX9E(uint16_t vx);
+static void _EXA1(uint16_t vx);
+static void _FX07(uint16_t vx);
+static void _FX15(uint16_t vx);
+static void _FX18(uint16_t vx);
+static void _FX1E(uint16_t vx);
+static void _FX0A(uint16_t vx);
+static void _FX29(uint16_t vx);
+static void _FX33(uint16_t vx);
+static void _FX55(uint16_t vx);
+static void _FX65(uint16_t vx);
 
 static void decode(uint16_t ins)
 {
@@ -171,7 +182,6 @@ static void decode(uint16_t ins)
   switch (nibbles[0])
   {
   case 0x00:
-    // TODO: make const
     if (ins_equal(nibbles, ARR_00E0))
     {
       _00E0();
@@ -239,6 +249,10 @@ static void decode(uint16_t ins)
     _ANNN(nnn);
     break;
 
+  case 0x0b:
+    _BNNN(nnn);
+    break;
+
   case 0x0c:
     _CXNN(x, nn);
     break;
@@ -246,6 +260,51 @@ static void decode(uint16_t ins)
   case 0x0d:
     _DXYN(x, y, n);
     break;
+
+  case 0x0E:
+    switch (nibbles[3])
+    {
+    case 0x0E:
+      _EX9E(x);
+      break;
+    case 0x01:
+      _EXA1(x);
+      break;
+    }
+
+    break;
+
+  case 0x0F:
+    switch (nn)
+    {
+    case 0x07:
+      _FX07(x);
+      break;
+    case 0x15:
+      _FX15(x);
+      break;
+    case 0x18:
+      _FX18(x);
+      break;
+    case 0x1E:
+      _FX1E(x);
+      break;
+    case 0x0A:
+      _FX0A(x);
+      break;
+    case 0x29:
+      _FX29(x);
+      break;
+    case 0x33:
+      _FX33(x);
+      break;
+    case 0x55:
+      _FX55(x);
+      break;
+    case 0x65:
+      _FX65(x);
+      break;
+    }
   }
 };
 
@@ -369,9 +428,10 @@ static void _8XY7(uint16_t vx, uint16_t vy)
 
   vr[vx] = (uint8_t)(vr[vy] - vr[vx]);
 }
-static void _8XYE(uint16_t vx, uint16_t vy) {
-    // duplicate of 8xy6
-    // ambigous and may need to be configurable.
+static void _8XYE(uint16_t vx, uint16_t vy)
+{
+  // duplicate of 8xy6
+  // ambigous and may need to be configurable.
   vr[vx] = vr[vy];
   vr[0xF] = vr[vx] & 0x1;
   vr[vx] = vr[vx] << 1;
@@ -440,5 +500,64 @@ static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n)
         break;
       }
     }
+  }
+}
+
+static void _EX9E(uint16_t vx)
+{
+  if (chip8_input[vr[vx]])
+  {
+    pc += 2;
+  }
+}
+
+static void _EXA1(uint16_t vx)
+{
+  if (!chip8_input[vr[vx]])
+  {
+    pc += 2;
+  }
+}
+
+static void _FX07(uint16_t vx)
+{
+}
+static void _FX15(uint16_t vx)
+{
+}
+static void _FX18(uint16_t vx)
+{
+}
+static void _FX1E(uint16_t vx)
+{
+  // possible review needed
+  ir += vx;
+}
+static void _FX0A(uint16_t vx)
+{
+  // TODO
+  pc -= 2;
+
+}
+static void _FX29(uint16_t vx)
+{
+  // TODO
+}
+static void _FX33(uint16_t vx)
+{
+  memory[ir] = vr[vx] / 10;
+  memory[ir + 1] = (vr[vx] / 10) % 10;
+  memory[ir + 2] = vr[vx] % 10;
+}
+static void _FX55(uint16_t vx)
+{
+  for (int i = 0; i < vr[vx]; i++) {
+    memory[ir + i] = vr[i];
+  }
+}
+static void _FX65(uint16_t vx)
+{
+  for (int i = 0; i < vr[vx]; i++) {
+    vr[i] = memory[ir + i];
   }
 }
