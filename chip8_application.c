@@ -193,13 +193,27 @@ static void decode(uint16_t ins)
       _00EE();
       break;
     }
-
+    
+    break;
+    
   case 0x01:
     _1NNN(nnn);
     break;
 
   case 0x02:
-    printf("test");
+    _2NNN(nnn);
+    break;
+
+  case 0x03:
+    _3XNN(x, nn);
+    break;
+
+  case 0x04:
+    _4XNN(x, nn);
+    break;
+
+  case 0x05:
+    _5XY0(x, y);
     break;
 
   case 0x06:
@@ -243,6 +257,10 @@ static void decode(uint16_t ins)
       break;
     }
 
+    break;
+
+  case 0x09:
+    _9XY0(x, y);
     break;
 
   case 0x0a:
@@ -305,6 +323,7 @@ static void decode(uint16_t ins)
       _FX65(x);
       break;
     }
+    break;
   }
 };
 
@@ -364,7 +383,7 @@ static void _6XNN(uint16_t vx, uint16_t nn)
 
 static void _7XNN(uint16_t vx, uint16_t nn)
 {
-  vr[vx] += nn;
+  vr[vx] = (uint8_t)(vr[vx] + nn);
 }
 
 static void _8XY0(uint16_t vx, uint16_t vy)
@@ -537,7 +556,6 @@ static void _FX0A(uint16_t vx)
 {
   // TODO
   pc -= 2;
-
 }
 static void _FX29(uint16_t vx)
 {
@@ -551,13 +569,15 @@ static void _FX33(uint16_t vx)
 }
 static void _FX55(uint16_t vx)
 {
-  for (int i = 0; i < vr[vx]; i++) {
+  for (int i = 0; i < vr[vx]; i++)
+  {
     memory[ir + i] = vr[i];
   }
 }
 static void _FX65(uint16_t vx)
 {
-  for (int i = 0; i < vr[vx]; i++) {
+  for (int i = 0; i < vr[vx]; i++)
+  {
     vr[i] = memory[ir + i];
   }
 }

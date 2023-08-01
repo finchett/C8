@@ -14,5 +14,5 @@ void push(uint16_t n) {
 };
 
 uint16_t pop() {
-    return stack[stack_index--];
+    return stack[--stack_index];
 };
