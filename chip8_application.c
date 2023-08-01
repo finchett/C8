@@ -132,6 +132,15 @@ static void _2NNN(uint16_t nnn);
 static void _3XNN(uint16_t vx, uint16_t nn);
 static void _4XNN(uint16_t vx, uint16_t nn);
 static void _5XY0(uint16_t vx, uint16_t vy);
+static void _8XY0(uint16_t vx, uint16_t vy);
+static void _8XY1(uint16_t vx, uint16_t vy);
+static void _8XY2(uint16_t vx, uint16_t vy);
+static void _8XY3(uint16_t vx, uint16_t vy);
+static void _8XY4(uint16_t vx, uint16_t vy);
+static void _8XY5(uint16_t vx, uint16_t vy);
+static void _8XY6(uint16_t vx, uint16_t vy);
+static void _8XY7(uint16_t vx, uint16_t vy);
+static void _8XYE(uint16_t vx, uint16_t vy);
 static void _9XY0(uint16_t vx, uint16_t vy);
 static void _6XNN(uint16_t vx, uint16_t nn);
 static void _7XNN(uint16_t vx, uint16_t nn);
@@ -187,6 +196,41 @@ static void decode(uint16_t ins)
 
   case 0x07:
     _7XNN(x, nn);
+    break;
+
+  case 0x08:
+
+    switch (nibbles[3])
+    {
+    case 0x00:
+      _8XY0(x, y);
+      break;
+    case 0x01:
+      _8XY1(x, y);
+      break;
+    case 0x02:
+      _8XY2(x, y);
+      break;
+    case 0x03:
+      _8XY3(x, y);
+      break;
+    case 0x04:
+      _8XY4(x, y);
+      break;
+    case 0x05:
+      _8XY5(x, y);
+      break;
+    case 0x06:
+      _8XY6(x, y);
+      break;
+    case 0x07:
+      _8XY7(x, y);
+      break;
+    case 0x0E:
+      _8XYE(x, y);
+      break;
+    }
+
     break;
 
   case 0x0a:
@@ -256,6 +300,75 @@ static void _6XNN(uint16_t vx, uint16_t nn)
 static void _7XNN(uint16_t vx, uint16_t nn)
 {
   vr[vx] += nn;
+}
+
+static void _8XY0(uint16_t vx, uint16_t vy)
+{
+  vr[vx] = vr[vy];
+}
+static void _8XY1(uint16_t vx, uint16_t vy)
+{
+  vr[vx] = vr[vx] | vr[vy];
+}
+static void _8XY2(uint16_t vx, uint16_t vy)
+{
+  vr[vx] = vr[vx] & vr[vy];
+}
+static void _8XY3(uint16_t vx, uint16_t vy)
+{
+  vr[vx] = vr[vx] ^ vr[vy];
+}
+static void _8XY4(uint16_t vx, uint16_t vy)
+{
+  uint16_t sum = vr[vx] + vr[vy];
+  vr[vx] = (uint8_t)(vr[vx] + vr[vy]);
+
+  if (vr[vx] < sum)
+  {
+    vr[0xF] = 1;
+  }
+  else
+  {
+    vr[0xF] = 0;
+  }
+}
+
+static void _8XY5(uint16_t vx, uint16_t vy)
+{
+  vr[0xF] = 1;
+
+  if (vr[vx] < vr[vy])
+  {
+    vr[0xF] = 0;
+  }
+
+  vr[vx] = (uint8_t)(vr[vx] - vr[vy]);
+}
+static void _8XY6(uint16_t vx, uint16_t vy)
+{
+  // ambigous and may need to be configurable.
+  vr[vx] = vr[vy];
+  vr[0xF] = vr[vx] & 0x1;
+  vr[vx] = vr[vx] >> 1;
+}
+
+static void _8XY7(uint16_t vx, uint16_t vy)
+{
+  vr[0xF] = 1;
+
+  if (vr[vy] < vr[vx])
+  {
+    vr[0xF] = 0;
+  }
+
+  vr[vx] = (uint8_t)(vr[vy] - vr[vx]);
+}
+static void _8XYE(uint16_t vx, uint16_t vy) {
+    // duplicate of 8xy6
+    // ambigous and may need to be configurable.
+  vr[vx] = vr[vy];
+  vr[0xF] = vr[vx] & 0x1;
+  vr[vx] = vr[vx] << 1;
 }
 
 static void _9XY0(uint16_t vx, uint16_t vy)
