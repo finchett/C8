@@ -145,6 +145,8 @@ static void _9XY0(uint16_t vx, uint16_t vy);
 static void _6XNN(uint16_t vx, uint16_t nn);
 static void _7XNN(uint16_t vx, uint16_t nn);
 static void _ANNN(uint16_t nnn);
+static void _BNNN(uint16_t nnn);
+static void _CXNN(uint16_t vx, uint16_t nn);
 static void _DXYN(uint16_t x, uint16_t y, uint16_t n);
 
 static void decode(uint16_t ins)
@@ -235,6 +237,10 @@ static void decode(uint16_t ins)
 
   case 0x0a:
     _ANNN(nnn);
+    break;
+
+  case 0x0c:
+    _CXNN(x, nn);
     break;
 
   case 0x0d:
@@ -382,6 +388,17 @@ static void _9XY0(uint16_t vx, uint16_t vy)
 static void _ANNN(uint16_t nnn)
 {
   ir = nnn;
+}
+
+static void _BNNN(uint16_t nnn)
+{
+  pc = nnn + vr[0x0];
+}
+
+static void _CXNN(uint16_t vx, uint16_t nn)
+{
+  uint8_t random_val = rand();
+  vr[vx] = random_val & nn;
 }
 
 static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n)
