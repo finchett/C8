@@ -32,6 +32,9 @@ struct _Chip8Application
   uint16_t *ir;
 };
 
+//global app for now
+Chip8Application *self_app;
+
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
 
 static void chip8_application_class_init(Chip8ApplicationClass *class){};
@@ -46,6 +49,7 @@ static void on_tick(Chip8Timer *timer, gpointer data)
 {
 
   Chip8Application *self = data;
+  self_app = self;
 
   // todo: multithread rather than using gtk timeouts which are not precise enough.
 
@@ -540,9 +544,11 @@ static void _EXA1(uint16_t vx)
 
 static void _FX07(uint16_t vx)
 {
+  vr[vx] = self_app->timer->tick;
 }
 static void _FX15(uint16_t vx)
 {
+  self_app->timer->tick = vr[vx];
 }
 static void _FX18(uint16_t vx)
 {
@@ -563,20 +569,20 @@ static void _FX29(uint16_t vx)
 }
 static void _FX33(uint16_t vx)
 {
-  memory[ir] = vr[vx] / 10;
+  memory[ir] = vr[vx] / 100;
   memory[ir + 1] = (vr[vx] / 10) % 10;
   memory[ir + 2] = vr[vx] % 10;
 }
 static void _FX55(uint16_t vx)
 {
-  for (int i = 0; i < vr[vx]; i++)
+  for (int i = 0; i <= vx; i++)
   {
     memory[ir + i] = vr[i];
   }
 }
 static void _FX65(uint16_t vx)
 {
-  for (int i = 0; i < vr[vx]; i++)
+  for (int i = 0; i <= vx; i++)
   {
     vr[i] = memory[ir + i];
   }
