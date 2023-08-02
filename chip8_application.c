@@ -67,7 +67,7 @@ static void read_rom()
   FILE *file;
 
   // Open the file for reading
-  file = fopen("test_opcode.ch8", "rb");
+  file = fopen("space_invaders.ch8", "rb");
   if (file == NULL)
   {
     printf("Failed to open the file.\n");
@@ -513,7 +513,7 @@ static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n)
         *pixel = 0;
       }
 
-      if (sprite_bit == 1 && *pixel == 0)
+      else if (sprite_bit == 1 && *pixel == 0)
       {
         *pixel = 1;
       }
@@ -556,12 +556,12 @@ static void _FX18(uint16_t vx)
 static void _FX1E(uint16_t vx)
 {
   // possible review needed
-  ir += vx;
+  ir += vr[vx];
 }
 static void _FX0A(uint16_t vx)
 {
   // TODO
-  pc -= 2;
+  // pc -= 2;
 }
 static void _FX29(uint16_t vx)
 {
