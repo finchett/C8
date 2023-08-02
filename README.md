@@ -8,4 +8,4 @@ todos
 - fix flicker
 - clean up scattered and hard coded constant values.
 
-![Screenshot](https://github.com/sfinche/C8/blob/main/screenshot.png?raw=true)
+![Screenshot](https://github.com/sfinche/C8/blob/main/image.png?raw=true)
