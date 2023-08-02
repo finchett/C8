@@ -67,7 +67,7 @@ static void read_rom()
   FILE *file;
 
   // Open the file for reading
-  file = fopen("ufo.ch8", "rb");
+  file = fopen("pong.rom", "rb");
   if (file == NULL)
   {
     printf("Failed to open the file.\n");
@@ -510,11 +510,15 @@ static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n)
       {
         vr[0xF] = 1;
         *pixel = 0;
+        *(pixel + 1) = 0;
+        *(pixel + 2) = 0;
       }
 
       else if (sprite_bit == 1 && *pixel == 0)
       {
         *pixel = 1;
+        *(pixel + 1) = 1;
+        *(pixel + 2) = 1;
       }
 
       if (x + bit >= 64)
