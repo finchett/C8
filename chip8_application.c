@@ -67,7 +67,7 @@ static void read_rom()
   FILE *file;
 
   // Open the file for reading
-  file = fopen("space_invaders.ch8", "rb");
+  file = fopen("Pong.ch8", "rb");
   if (file == NULL)
   {
     printf("Failed to open the file.\n");
@@ -92,7 +92,7 @@ Chip8Application *chip8_application_new(GtkWindow *window)
   // load rom
   read_rom();
 
-  self->timer = chip8_timer_new(255, 2);
+  self->timer = chip8_timer_new(255, 1);
   g_signal_connect(self->timer, "on_tick", (GCallback)on_tick, (gpointer)self);
 
   // display
