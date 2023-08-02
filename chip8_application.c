@@ -67,7 +67,7 @@ static void read_rom()
   FILE *file;
 
   // Open the file for reading
-  file = fopen("Pong.ch8", "rb");
+  file = fopen("ufo.ch8", "rb");
   if (file == NULL)
   {
     printf("Failed to open the file.\n");
@@ -91,6 +91,7 @@ Chip8Application *chip8_application_new(GtkWindow *window)
 
   // load rom
   read_rom();
+  load_fonts(memory);
 
   self->timer = chip8_timer_new(255, 1);
   g_signal_connect(self->timer, "on_tick", (GCallback)on_tick, (gpointer)self);
@@ -121,8 +122,6 @@ static uint16_t fetch()
   ret = (uint16_t)((byte1 << 8) | byte2);
   return ret;
 };
-
-// todo: move elsewhere
 
 static bool ins_equal(uint16_t arr1[], uint16_t arr2[])
 {
@@ -565,7 +564,7 @@ static void _FX0A(uint16_t vx)
 }
 static void _FX29(uint16_t vx)
 {
-  // TODO
+  ir = 0x050 + vr[vx];
 }
 static void _FX33(uint16_t vx)
 {
