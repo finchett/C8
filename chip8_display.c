@@ -39,8 +39,8 @@ static bool on_render(GtkGLArea *area, GdkGLContext *context)
 }
 
 int one_d_index(uint16_t x, uint16_t y) {
-  x = x % 64;
-  y = y % 32;
+  x = x % 64 - 1;
+  y = y % 32 + 1;
   return (((((32-y) * 64) + x)) * 3);
 }
 

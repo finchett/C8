@@ -12,9 +12,6 @@
   TODO: make child of GtkWidget https://docs.gtk.org/gtk4/class.Widget.html
 */
 
-static uint16_t ARR_00E0[] = {0x00, 0x00, 0x0e, 0x00};
-static uint16_t ARR_00EE[] = {0x00, 0x00, 0x0e, 0x0e};
-
 struct _Chip8Application
 {
   GObject parent;
@@ -32,7 +29,7 @@ struct _Chip8Application
   uint16_t *ir;
 };
 
-//global app for now
+// global app for now
 Chip8Application *self_app;
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
@@ -47,7 +44,6 @@ static void execute();
 
 static void on_tick(Chip8Timer *timer, gpointer data)
 {
-
   Chip8Application *self = data;
   self_app = self;
 
@@ -55,42 +51,18 @@ static void on_tick(Chip8Timer *timer, gpointer data)
 
   uint16_t ins = fetch();
   decode(ins);
-  // execute();
 
   // TODO: move out of main thread.
   //  only queue redraw when display is called. Use flag as instructions will be executed off the main thread.
-  gtk_gl_area_queue_render(self->gl_area);
+  gtk_gl_area_queue_render(((GtkGLArea *)self->gl_area));
 }
-
-static void read_rom()
-{
-  FILE *file;
-
-  // Open the file for reading
-  file = fopen("pong.rom", "rb");
-  if (file == NULL)
-  {
-    printf("Failed to open the file.\n");
-  }
-
-  // Read the file into the buffer (program starts at 0x200)
-  size_t bytesRead = fread(memory + 0x200, sizeof(uint8_t), (4096) - 0x200, file);
-
-  // set pc to 0x200
-  pc = 0x200;
-
-  // Close the file
-  fclose(file);
-
-  printf("Read %zu bytes from the file.\n", bytesRead);
-};
 
 Chip8Application *chip8_application_new(GtkWindow *window)
 {
   Chip8Application *self = g_object_new(CHIP8_TYPE_APPLICATION, NULL);
 
   // load rom
-  read_rom();
+  read_rom("pong.rom");
   load_fonts(memory);
 
   self->timer = chip8_timer_new(255, 1);
@@ -118,15 +90,15 @@ static uint16_t fetch()
   uint16_t ret;
   pc += 2;
 
-  // returns joined bytes
   ret = (uint16_t)((byte1 << 8) | byte2);
+
   return ret;
 };
 
-static bool ins_equal(uint16_t arr1[], uint16_t arr2[])
-{
-  return !memcmp(arr1, arr2, sizeof(uint16_t) * 4);
-}
+#pragma region opcode declarations
+
+static const uint16_t ARR_00E0[] = {0x00, 0x00, 0x0e, 0x00};
+static const uint16_t ARR_00EE[] = {0x00, 0x00, 0x0e, 0x0e};
 
 static void _00E0();
 static void _00EE();
@@ -163,6 +135,15 @@ static void _FX33(uint16_t vx);
 static void _FX55(uint16_t vx);
 static void _FX65(uint16_t vx);
 
+#pragma endregion
+
+#pragma region decode
+
+static bool ins_equal(uint16_t arr1[], uint16_t arr2[])
+{
+  return !memcmp(arr1, arr2, sizeof(uint16_t) * 4);
+}
+
 static void decode(uint16_t ins)
 {
   uint16_t nibbles[4] = {0};
@@ -196,9 +177,9 @@ static void decode(uint16_t ins)
       _00EE();
       break;
     }
-    
+
     break;
-    
+
   case 0x01:
     _1NNN(nnn);
     break;
@@ -330,9 +311,9 @@ static void decode(uint16_t ins)
   }
 };
 
-static void execute()
-{
-}
+#pragma endregion
+
+#pragma region opcode definitions
 
 static void _00E0()
 {
@@ -568,7 +549,7 @@ static void _FX0A(uint16_t vx)
 }
 static void _FX29(uint16_t vx)
 {
-  ir = 0x050 + vr[vx];
+  ir =0x0050 + (vr[vx] * 5);
 }
 static void _FX33(uint16_t vx)
 {
@@ -590,3 +571,5 @@ static void _FX65(uint16_t vx)
     vr[i] = memory[ir + i];
   }
 }
+
+#pragma endregion
