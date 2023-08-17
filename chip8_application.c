@@ -5,6 +5,9 @@
 #include "chip8_memory.h"
 #include "chip8_input.h"
 #include "chip8_font.h"
+#include <time.h>
+#include <unistd.h>
+#include <pthread.h>
 #include <stdint.h>
 #include "debug.h"
 
@@ -27,6 +30,7 @@ struct _Chip8Application
   uint16_t *stack;
   uint16_t *pc;
   uint16_t *ir;
+  pthread_t instruction_thread_id;
 };
 
 // global app for now
@@ -40,34 +44,46 @@ static void chip8_application_init(Chip8Application *instance){};
 
 static uint16_t fetch();
 static void decode(uint16_t ins);
-static void execute();
 
 static void on_tick(Chip8Timer *timer, gpointer data)
 {
   Chip8Application *self = data;
-  self_app = self;
 
   // todo: multithread rather than using gtk timeouts which are not precise enough.
 
-  uint16_t ins = fetch();
-  decode(ins);
+  // uint16_t ins = fetch();
+  // decode(ins);
 
   // TODO: move out of main thread.
   //  only queue redraw when display is called. Use flag as instructions will be executed off the main thread.
   gtk_gl_area_queue_render(((GtkGLArea *)self->gl_area));
 }
 
+
+
+void *instruction_main_loop(void *thread_id) {
+  while (true)
+  {
+    nanosleep((const struct timespec[]){{0, 1428571L}}, NULL);
+    uint16_t ins = fetch();
+    decode(ins);
+  }
+  
+}
+
 Chip8Application *chip8_application_new(GtkWindow *window)
 {
   Chip8Application *self = g_object_new(CHIP8_TYPE_APPLICATION, NULL);
+  self_app = self;
 
   // load rom
   read_rom("pong.rom");
   load_fonts(memory);
 
-  self->timer = chip8_timer_new(255, 1);
+  self->timer = chip8_timer_new(255, 17);
   g_signal_connect(self->timer, "on_tick", (GCallback)on_tick, (gpointer)self);
 
+  pthread_create(&(self->instruction_thread_id), NULL, instruction_main_loop, NULL);
   // display
   self->gl_area = (chip8_add_display(window));
 
