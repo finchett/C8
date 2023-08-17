@@ -11,9 +11,7 @@
 #include <stdint.h>
 #include "debug.h"
 
-/*
-  TODO: make child of GtkWidget https://docs.gtk.org/gtk4/class.Widget.html
-*/
+
 
 struct _Chip8Application
 {
@@ -33,13 +31,15 @@ struct _Chip8Application
   pthread_t instruction_thread_id;
 };
 
+static const double MAIN_NANOSECONDS = 1428571L; // ~700 instructions per second.
+static const int REDRAW_DELAY = 17; // ~Redraw ~60 times per second. 
+
 // global app for now
 Chip8Application *self_app;
 
 G_DEFINE_TYPE(Chip8Application, chip8_application, G_TYPE_OBJECT)
 
 static void chip8_application_class_init(Chip8ApplicationClass *class){};
-
 static void chip8_application_init(Chip8Application *instance){};
 
 static uint16_t fetch();
@@ -48,23 +48,13 @@ static void decode(uint16_t ins);
 static void on_tick(Chip8Timer *timer, gpointer data)
 {
   Chip8Application *self = data;
-
-  // todo: multithread rather than using gtk timeouts which are not precise enough.
-
-  // uint16_t ins = fetch();
-  // decode(ins);
-
-  // TODO: move out of main thread.
-  //  only queue redraw when display is called. Use flag as instructions will be executed off the main thread.
   gtk_gl_area_queue_render(((GtkGLArea *)self->gl_area));
 }
-
-
 
 void *instruction_main_loop(void *thread_id) {
   while (true)
   {
-    nanosleep((const struct timespec[]){{0, 1428571L}}, NULL);
+    nanosleep((const struct timespec[]){{0, MAIN_NANOSECONDS}}, NULL);
     uint16_t ins = fetch();
     decode(ins);
   }
@@ -80,10 +70,12 @@ Chip8Application *chip8_application_new(GtkWindow *window)
   read_rom("pong.rom");
   load_fonts(memory);
 
-  self->timer = chip8_timer_new(255, 17);
+  self->timer = chip8_timer_new(255, REDRAW_DELAY);
   g_signal_connect(self->timer, "on_tick", (GCallback)on_tick, (gpointer)self);
 
+  // main_instruction thread persists until exit.
   pthread_create(&(self->instruction_thread_id), NULL, instruction_main_loop, NULL);
+
   // display
   self->gl_area = (chip8_add_display(window));
 
@@ -113,8 +105,8 @@ static uint16_t fetch()
 
 #pragma region opcode declarations
 
-static const uint16_t ARR_00E0[] = {0x00, 0x00, 0x0e, 0x00};
-static const uint16_t ARR_00EE[] = {0x00, 0x00, 0x0e, 0x0e};
+static uint16_t ARR_00E0[] = {0x00, 0x00, 0x0e, 0x00};
+static uint16_t ARR_00EE[] = {0x00, 0x00, 0x0e, 0x0e};
 
 static void _00E0();
 static void _00EE();
@@ -153,7 +145,7 @@ static void _FX65(uint16_t vx);
 
 #pragma endregion
 
-#pragma region decode
+#pragma region decode 
 
 static bool ins_equal(uint16_t arr1[], uint16_t arr2[])
 {
@@ -482,7 +474,7 @@ static void _CXNN(uint16_t vx, uint16_t nn)
 
 static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n)
 {
-
+  // using bitwise and since its faster than mod 2 operations.
   uint16_t x = vr[vx] & 63;
   uint16_t y = vr[vy] & 31;
 
@@ -505,6 +497,7 @@ static void _DXYN(uint16_t vx, uint16_t vy, uint16_t n)
 
       if (sprite_bit == 1 && *pixel == 1)
       {
+        // each pixel has three values (r,g,b)
         vr[0xF] = 1;
         *pixel = 0;
         *(pixel + 1) = 0;

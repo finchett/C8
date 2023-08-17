@@ -12,7 +12,8 @@
         "initializer_list": "c",
         "span": "c",
         "valarray": "c",
-        "gl.h": "c"
+        "gl.h": "c",
+        "cstdint": "c"
     },
 
     "coloredRegions": {

@@ -2,11 +2,16 @@
 #include <gtk/gtk.h>
 #include "chip8_memory.h"
 
+#define MEMORY_BYTES 4096
+#define STACK_SIZE 32
+#define N_VARIABLE_REGISTERS 16
+#define PROGRAM_OFFSET 0x200
+
 uint16_t pc = 0;
 uint16_t ir = 0;
-uint8_t memory[4096];
-uint16_t stack[32];
-uint16_t vr[16];
+uint8_t memory[MEMORY_BYTES];
+uint16_t stack[STACK_SIZE];
+uint16_t vr[N_VARIABLE_REGISTERS];
 
 static int stack_index = 0;
 
@@ -32,10 +37,10 @@ void read_rom(char *rom)
   }
 
   // Read the file into the buffer (program starts at 0x200)
-  size_t bytesRead = fread(memory + 0x200, sizeof(uint8_t), (4096) - 0x200, file);
+  size_t bytesRead = fread(memory + PROGRAM_OFFSET, sizeof(uint8_t), (MEMORY_BYTES) - PROGRAM_OFFSET, file);
 
   // set pc to 0x200
-  pc = 0x200;
+  pc = PROGRAM_OFFSET;
 
   // Close the file
   fclose(file);
